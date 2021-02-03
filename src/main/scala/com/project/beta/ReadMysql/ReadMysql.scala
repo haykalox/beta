@@ -13,13 +13,13 @@ object ReadMysql {
           .enableHiveSupport()
           .getOrCreate()
 
-        val query = """select id,user_name,descr from test_user """
+      /*  val query = """select id,user_name,descr from test_user """ */
 
         def df = spark.read
           .format("jdbc")
           .option("url", "jdbc:mysql://localhost:3306/test")
           .option("driver", "com.mysql.jdbc.Driver")
-          .option("dbtable", query )
+          .option("dbtable", "(select id,user_name,descr from test_user limit 10) tmp" )
           .option("user", "root")
           .option("password", "0910")
           .load()
