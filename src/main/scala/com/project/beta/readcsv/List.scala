@@ -17,6 +17,7 @@ object List {
       .option("mode","DROPMALFORMED")
       .load(args(0))
 
+      df.select()
 
     df.write
       .format("csv")
