@@ -13,13 +13,20 @@ object ReadMysql {
           .enableHiveSupport()
           .getOrCreate()
 
-      /*  val query = """select id,user_name,descr from test_user """ */
+      /*  val query = "(select id,user_name,descr from test_user) " */
 
         def df = spark.read
           .format("jdbc")
           .option("url", "jdbc:mysql://localhost:3306/test")
           .option("driver", "com.mysql.jdbc.Driver")
-          .option("dbtable", "(select id,user_name,descr from test_user limit 10) tmp" )
+          .option("dbtable", "test_user" )
+          .option("partitionColumn","id")
+          .option("numPartitions","2")
+          .option("lowerBound","1")
+          .option("upperBound","10")
+          .option("fetchsize","10")
+          .option("sessionInitStatement",
+              "update test_user set create_time =(select CONVERT_TZ (create_time ,'+00:00','-03:00')")
           .option("user", "root")
           .option("password", "0910")
           .load()
@@ -30,7 +37,7 @@ object ReadMysql {
 
 
 
-        df.show()
+        df.show(50)
 /*
         df.write
           .format("jdbc")
