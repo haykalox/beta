@@ -12,13 +12,20 @@ object CsvMysql {
       .enableHiveSupport()
       .getOrCreate()
 
+
  def df = spark.read
    .format("csv")
    .option("header","true")
    .option("mode","dropmalformed")
    .load(args(0))
+    .withColumnRenamed("Name","name")
+    .withColumnRenamed("Team","team")
+    .withColumnRenamed("Position","position")
+    .withColumnRenamed("Height","height")
+    .withColumnRenamed("Weight","weight")
+    .withColumnRenamed("Age","age")
 
-    df.show()
+        df.show()
 
     df.write
       .format("jdbc")
@@ -27,7 +34,6 @@ object CsvMysql {
       .option("dbtable","test_data")
       .mode("overwrite")
       .save()
-
 
 
   }
